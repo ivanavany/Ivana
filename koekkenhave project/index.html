@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grøntsagshavens årshjul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="hero">
+    <h1>Grøntsagshavens årshjul</h1>
+  </header>
+
+  <main class="wrap">
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="monthView">Efter måned</button>
+      <button class="tab-btn" data-tab="plantView">Efter plante</button>
+    </nav>
+
+    <!-- Save / export bar -->
+    <div class="savebar">
+      <span id="saveStatus"></span>
+      <span class="savebar-actions">
+        <button id="exportBtn">Eksportér data.js</button>
+        <button id="resetBtn" class="ghost">Nulstil</button>
+      </span>
+    </div>
+
+    <section id="monthView" class="panel active">
+      <div class="picker" id="monthPicker"></div>
+      <div class="detail" id="monthDetail"></div>
+    </section>
+
+    <section id="plantView" class="panel">
+      <input type="text" id="plantSearch" placeholder="Søg efter en afgrøde…">
+      <div class="picker" id="plantPicker"></div>
+      <div class="detail" id="plantDetail"></div>
+    </section>
+
+  </main>
+
+  <!-- Popup form for adding/editing a task -->
+  <dialog id="editDialog">
+    <h3 id="dialogTitle">Tilføj opgave</h3>
+    <label>Måned <select id="fMonth"></select></label>
+    <label>Kategori <select id="fCat"></select></label>
+    <label>Afgrøde / opgave <input type="text" id="fName" placeholder="fx Grønkål"></label>
+    <label>Note <textarea id="fNote" rows="3" placeholder="Valgfrit — fx sort, tidspunkt, erfaring"></textarea></label>
+    <div class="dialog-actions">
+      <button id="fCancel" class="ghost">Annullér</button>
+      <button id="fSave">Gem</button>
+    </div>
+  </dialog>
+
+  <footer>
+    <p id="sourceList"></p>
+    <p>Klik ✎ for at redigere, ✕ for at slette, og "+ Tilføj" for nye opgaver.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

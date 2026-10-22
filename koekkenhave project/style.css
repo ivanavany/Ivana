@@ -1,0 +1,361 @@
+:root{
+  --paper:#EEE9D8;
+  --paper-alt:#E5DFC9;
+  --ink:#232F1D;
+  --ink-soft:#5B6350;
+  --line:#C9C0A2;
+  --grow:#5C7A3B;    /* Så og forspir */
+  --grow-bg:#DCE6C9;
+  --plant:#8A5A32;   /* Plantes ud */
+  --plant-bg:#E9DAC4;
+  --harvest:#A3324A; /* Høst */
+  --harvest-bg:#EFD3D8;
+  --tips:#B4842A;    /* Plantepleje */
+  --tips-bg:#F1E1B8;
+  --prep:#4F5D6B;    /* Haveforberedelse */
+  --prep-bg:#DDE2E6;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Karla', sans-serif;
+  line-height:1.45;
+}
+
+.wrap{max-width:860px;margin:0 auto;padding:0 20px 80px;}
+
+/* ---------- HERO ---------- */
+header.hero{
+  padding:56px 20px 28px;
+  text-align:center;
+  border-bottom:1px solid var(--line);
+  margin-bottom:28px;
+}
+header.hero h1{
+  font-family:'Fraunces', serif;
+  font-weight:500;
+  font-size:clamp(2rem, 5vw, 3rem);
+  margin:0 0 10px;
+}
+header.hero p{
+  max-width:520px;
+  margin:0 auto;
+  color:var(--ink-soft);
+  font-size:.9rem;
+}
+
+/* ---------- TABS ---------- */
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:30px;
+}
+.tab-btn{
+  font-family:'Fraunces', serif;
+  font-size:1rem;
+  font-weight:500;
+  background:var(--paper-alt);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:10px 20px;
+  cursor:pointer;
+  color:var(--ink-soft);
+}
+.tab-btn.active{
+  background:var(--ink);
+  color:var(--paper);
+  border-color:var(--ink);
+}
+
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* ---------- PICKERS (month / plant buttons) ---------- */
+.picker{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  margin-bottom:28px;
+}
+.picker button{
+  font-family:'Karla', sans-serif;
+  font-size:.82rem;
+  font-weight:600;
+  background:var(--paper-alt);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:7px 14px;
+  cursor:pointer;
+  color:var(--ink);
+}
+.picker button.selected{
+  background:var(--grow);
+  border-color:var(--grow);
+  color:#fff;
+}
+
+#plantSearch{
+  display:block;
+  width:100%;
+  max-width:320px;
+  margin:0 auto 18px;
+  font-family:'Karla', sans-serif;
+  font-size:.9rem;
+  padding:9px 14px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--paper-alt);
+  color:var(--ink);
+}
+
+/* ---------- DETAIL CARDS ---------- */
+.detail{min-height:120px;}
+
+.category{
+  margin-bottom:18px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+}
+.category h3{
+  margin:0;
+  padding:10px 16px;
+  font-family:'Fraunces', serif;
+  font-weight:500;
+  font-size:.95rem;
+  color:#fff;
+}
+.category.sow h3{background:var(--grow);}
+.category.plantOut h3{background:var(--plant);}
+.category.harvest h3{background:var(--harvest);}
+.category.tips h3{background:var(--tips);}
+
+.category ul{list-style:none;margin:0;padding:12px 16px;background:rgba(255,255,255,.4);}
+.category li{margin:0 0 8px;padding-left:12px;position:relative;font-size:.88rem;}
+.category li:last-child{margin-bottom:0;}
+.category li::before{
+  content:"";
+  position:absolute;left:0;top:.55em;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--ink-soft);
+}
+.category li b{display:block;}
+.category li span{color:var(--ink-soft);font-size:.85em;}
+
+.month-header{
+  text-align:center;
+  margin-bottom:18px;
+}
+.month-header h2{
+  font-family:'Fraunces', serif;
+  font-weight:500;
+  margin:0;
+  font-size:1.6rem;
+}
+.month-header p{color:var(--ink-soft);margin:4px 0 0;font-size:.85rem;}
+
+.plant-year-item{
+  border-bottom:1px solid var(--line);
+  padding:10px 0;
+}
+.plant-year-item:last-child{border-bottom:none;}
+.plant-year-item .m-label{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  margin-right:8px;
+}
+.plant-year-item .cat-tag{
+  display:inline-block;
+  font-size:.7rem;
+  font-weight:700;
+  padding:2px 8px;
+  border-radius:10px;
+  color:#fff;
+  margin-right:6px;
+}
+.cat-tag.sow{background:var(--grow);}
+.cat-tag.plantOut{background:var(--plant);}
+.cat-tag.harvest{background:var(--harvest);}
+.cat-tag.tips{background:var(--tips);}
+
+.empty-msg{
+  text-align:center;
+  color:var(--ink-soft);
+  font-style:italic;
+  padding:30px 0;
+}
+
+footer{
+  text-align:center;
+  margin-top:40px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
+  color:var(--ink-soft);
+  font-size:.78rem;
+}
+footer code{background:var(--paper-alt);padding:1px 5px;border-radius:3px;}
+
+@media (max-width:600px){
+  header.hero{padding:40px 16px 22px;}
+  .wrap{padding:0 14px 60px;}
+}
+
+/* ---------- SOURCE TAGS ---------- */
+.src-tags{margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;}
+.src-tag{
+  font-size:.66rem;
+  font-weight:600;
+  color:var(--ink-soft);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:0 6px;
+  text-decoration:none;
+  background:var(--paper);
+}
+a.src-tag:hover{color:var(--ink);border-color:var(--ink-soft);}
+footer a{color:var(--ink-soft);}
+footer p{margin:4px 0;}
+#climateNote{max-width:640px !important;}
+
+/* ---------- CLIMATE BOX ---------- */
+.climate{
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--paper-alt);
+  margin-bottom:26px;
+}
+.climate summary{
+  cursor:pointer;
+  padding:14px 18px;
+  list-style-position:outside;
+}
+#climateTitle{
+  display:block;
+  font-family:'Fraunces', serif;
+  font-weight:500;
+  font-size:1.1rem;
+}
+#climateSummary{display:block;color:var(--ink-soft);font-size:.88rem;margin-top:4px;}
+.facts{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  gap:10px 20px;
+  padding:4px 18px 18px;
+}
+.fact b{display:block;font-size:.82rem;}
+.fact span{font-size:.84rem;color:var(--ink-soft);}
+
+/* ---------- SAVE BAR ---------- */
+.savebar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  font-size:.8rem;
+  color:var(--ink-soft);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:8px 0;
+  margin-bottom:22px;
+}
+.savebar-actions{display:flex;gap:6px;}
+
+button#exportBtn, #fSave{
+  font-family:'Karla',sans-serif;font-weight:600;font-size:.8rem;
+  background:var(--ink);color:var(--paper);
+  border:1px solid var(--ink);border-radius:5px;padding:6px 12px;cursor:pointer;
+}
+button.ghost{
+  font-family:'Karla',sans-serif;font-weight:600;font-size:.8rem;
+  background:none;color:var(--ink-soft);
+  border:1px solid var(--line);border-radius:5px;padding:6px 12px;cursor:pointer;
+}
+button:focus-visible{outline:2px solid var(--grow);outline-offset:2px;}
+
+/* ---------- EDIT CONTROLS ---------- */
+.category h3{display:flex;justify-content:space-between;align-items:center;}
+.add-btn{
+  font-family:'Karla',sans-serif;font-size:.72rem;font-weight:700;
+  background:rgba(255,255,255,.2);color:#fff;
+  border:1px solid rgba(255,255,255,.5);border-radius:10px;
+  padding:2px 9px;cursor:pointer;
+}
+.add-btn:hover{background:rgba(255,255,255,.35);}
+
+.item-actions{float:right;display:flex;gap:2px;opacity:.35;transition:opacity .15s;}
+li:hover .item-actions, .plant-year-item:hover .item-actions,
+.item-actions:focus-within{opacity:1;}
+@media (hover:none){ .item-actions{opacity:.8;} }
+.icon-btn{
+  background:none;border:none;cursor:pointer;
+  font-size:.85rem;color:var(--ink-soft);padding:2px 5px;border-radius:4px;
+}
+.icon-btn:hover{background:var(--paper);color:var(--ink);}
+
+.src-tag.own{background:var(--grow-bg);color:var(--grow);border-color:var(--grow);}
+.empty-msg.small{padding:14px 16px;margin:0;}
+.py-note{margin-top:4px;color:var(--ink-soft);font-size:.85rem;}
+
+/* ---------- DIALOG ---------- */
+dialog{
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--paper);
+  color:var(--ink);
+  padding:22px;
+  width:min(420px, 92vw);
+}
+dialog::backdrop{background:rgba(35,47,29,.45);}
+dialog h3{font-family:'Fraunces',serif;font-weight:500;margin:0 0 14px;}
+dialog label{display:block;font-size:.8rem;font-weight:600;margin-bottom:12px;}
+dialog input, dialog select, dialog textarea{
+  display:block;width:100%;margin-top:4px;
+  font-family:'Karla',sans-serif;font-size:.9rem;
+  padding:8px 10px;border:1px solid var(--line);border-radius:6px;
+  background:var(--paper-alt);color:var(--ink);
+}
+.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;}
+
+/* ---------- PLANT PROFILE ---------- */
+.profile{
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:rgba(255,255,255,.45);
+  padding:18px 20px;
+  margin-bottom:22px;
+}
+.profile-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.profile-head h2{font-family:'Fraunces',serif;font-weight:500;margin:0;font-size:1.5rem;}
+.method-badge{
+  font-size:.72rem;font-weight:700;
+  background:var(--grow);color:#fff;
+  border-radius:10px;padding:3px 10px;
+}
+.p-group{color:var(--ink-soft);font-size:.8rem;margin:4px 0 12px;}
+.p-row{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:.88rem;}
+.p-row b{font-weight:700;}
+.p-conflict{font-size:.8rem;background:var(--tips-bg);border-radius:6px;padding:8px 10px;margin:10px 0 4px;}
+.tasks-title{font-family:'Fraunces',serif;font-weight:500;font-size:1.05rem;margin:0 0 6px;}
+.py-name{font-size:.82rem;color:var(--ink-soft);margin-left:4px;}
+.picker-label{width:100%;text-align:center;font-size:.75rem;color:var(--ink-soft);margin-top:6px;}
+@media (max-width:600px){ .p-row{grid-template-columns:1fr;gap:2px;} }
+
+/* ---------- MONTH SECTIONS: Planter / Haveforberedelse ---------- */
+.month-section{margin-bottom:34px;}
+.section-head{
+  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  border-bottom:2px solid var(--ink);
+  padding-bottom:6px;margin-bottom:14px;
+}
+.section-head h2{font-family:'Fraunces',serif;font-weight:500;font-size:1.25rem;margin:0;}
+.section-head p{margin:0;color:var(--ink-soft);font-size:.8rem;}
+.category.care h3{background:var(--tips);}
+.category.prep h3{background:var(--prep);}
+.cat-tag.care{background:var(--tips);}
+.cat-tag.prep{background:var(--prep);}
