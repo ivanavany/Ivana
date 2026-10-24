@@ -8,15 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="layout.css">
+<link rel="stylesheet" href="menu.css">
 </head>
 <body>
-
-  <button id="menuBtn" class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="sideMenu">☰</button>
-  <div id="menuBackdrop" class="menu-backdrop" hidden></div>
-  <nav id="sideMenu" class="side-menu" aria-label="Hovedmenu">
-    <a href="#wheel" class="menu-item" data-page="wheel">Grøntsagshavens årshjul</a>
-    <a href="#layout" class="menu-item" data-page="layout">Garden Layout</a>
-  </nav>
 
   <header class="hero">
     <h1 id="pageTitle">Grøntsagshavens årshjul</h1>
@@ -51,16 +46,6 @@
     </section>
     </div>
 
-    <div id="pageLayout" class="page">
-      <p class="layout-intro">12 bede (1 m brede; stierne er tegnet halvt så brede som i virkeligheden). Klik på et bed for at vælge op til 3 afgrøder.</p>
-      <div class="layout-actions">
-        <button id="exportLayoutBtn">Eksportér garden-data.json</button>
-        <button id="importLayoutBtn" class="ghost">Importér…</button>
-        <input type="file" id="importLayoutInput" accept="application/json,.json" hidden>
-      </div>
-      <div class="garden-scroll"><div id="gardenGrid" class="garden-grid"></div></div>
-    </div>
-
   </main>
 
   <!-- Popup form for adding/editing a task -->
@@ -76,17 +61,6 @@
     </div>
   </dialog>
 
-  <dialog id="bedDialog">
-    <h3 id="bedDialogTitle">Bed</h3>
-    <label>Afgrøde 1 <select id="bedCrop1"></select></label>
-    <label>Afgrøde 2 <select id="bedCrop2"></select></label>
-    <label>Afgrøde 3 <select id="bedCrop3"></select></label>
-    <div class="dialog-actions">
-      <button id="bedCancel" class="ghost">Annullér</button>
-      <button id="bedSave">Gem</button>
-    </div>
-  </dialog>
-
   <footer>
     <p id="sourceList"></p>
     <p>Klik ✎ for at redigere, ✕ for at slette, og "+ Tilføj" for nye opgaver.</p>
@@ -94,5 +68,7 @@
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script src="layout.js"></script>
+  <script src="menu.js"></script>
 </body>
 </html>

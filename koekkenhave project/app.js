@@ -1,5 +1,5 @@
 // ============================================================
-// APP LOGIC
+// APP LOGIC — Grøntsagshavens årshjul (month/plant views)
 // Reads SOURCES, CLIMATE and gardenData (from data.js),
 // draws the screen, and handles clicks + editing.
 // ============================================================
@@ -19,13 +19,6 @@ const SECTIONS = [
 ];
 const STORAGE_KEY = "veggieWheel.garden.v2";
 const OLD_STORAGE_KEY = "veggieWheel.garden.v1";
-const LAYOUT_STORAGE_KEY = "veggieWheel.layout.v1";
-const GARDEN_FILE = "garden-data.json";
-const MAX_CROPS_PER_BED = 3;
-const VARIANT_SEP = " – ";
-// Garden layout: 3 columns x 4 rows of beds, 1 m wide. Lengths per row in metres.
-const BED_COLS = 3;
-const BED_ROW_LENGTHS = [1.2, 1.2, 2.4, 2.4];
 
 // ------------------------------------------------------------
 // STATE — the app's "memory" while it's open
@@ -33,9 +26,6 @@ const BED_ROW_LENGTHS = [1.2, 1.2, 2.4, 2.4];
 let garden = loadGarden();      // the working copy of the data
 let currentMonth = null;        // index of the month on screen
 let currentPlant = null;        // name of the plant on screen
-let baseLayout = emptyLayout(); // layout from garden-data.json (or empty)
-let layout = loadLayout();      // bed id -> list of crops
-let editingBed = null;          // bed id open in the bed dialog
 
 // ------------------------------------------------------------
 // SAVING & LOADING (localStorage)
@@ -81,73 +71,7 @@ function saveGarden() {
 }
 
 function hasLocalEdits() {
-  try {
-    return localStorage.getItem(STORAGE_KEY) !== null || localStorage.getItem(LAYOUT_STORAGE_KEY) !== null;
-  } catch (e) { return false; }
-}
-
-// Find the main plant profile for a bed entry like "Kartofler" or "Kartofler – Sava"
-function plantForCrop(crop) {
-  return PLANTS.find(p => p.name === crop) ||
-    PLANTS.find(p => (p.variants || []).some(v => crop === p.name + VARIANT_SEP + v));
-}
-
-// All choices for the bed dialog: each plant, followed by its variants
-function cropOptions() {
-  const out = [];
-  PLANTS.slice().sort((a, b) => a.name.localeCompare(b.name, "da")).forEach(p => {
-    out.push(p.name);
-    (p.variants || []).forEach(v => out.push(p.name + VARIANT_SEP + v));
-  });
-  return out;
-}
-
-// Beds hold a list of crops; older saves/data may hold a single string
-function normalizeLayout(raw) {
-  const out = {};
-  Object.entries(raw).forEach(([id, v]) => {
-    const list = Array.isArray(v) ? v : (v ? [v] : []);
-    out[id] = list.filter(Boolean).slice(0, MAX_CROPS_PER_BED);
-  });
-  return out;
-}
-
-function emptyLayout() {
-  const out = {};
-  for (let c = 1; c <= BED_COLS; c++) for (let r = 1; r <= BED_ROW_LENGTHS.length; r++) out[`${c}-${r}`] = [];
-  return out;
-}
-
-// garden-data.json is the saved layout. It can only be fetched over http(s),
-// so when the page is opened from a file the empty layout is used instead
-// (use "Importér" on the layout page there).
-async function loadGardenFile() {
-  try {
-    const res = await fetch(GARDEN_FILE, { cache: "no-cache" });
-    if (!res.ok) return;
-    const data = await res.json();
-    baseLayout = normalizeLayout({ ...emptyLayout(), ...(data.layout || {}) });
-    layout = loadLayout();
-    renderLayout();
-  } catch (e) { /* file:// or offline — keep the empty layout */ }
-}
-
-function loadLayout() {
-  const base = { ...baseLayout };
-  try {
-    const saved = localStorage.getItem(LAYOUT_STORAGE_KEY);
-    if (saved) Object.assign(base, JSON.parse(saved));
-  } catch (e) { /* storage unavailable — use data.js */ }
-  return normalizeLayout(base);
-}
-
-function saveLayout() {
-  try {
-    localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layout));
-    setStatus("Layout gemt i denne browser — eksportér garden-data.json for at gøre det permanent");
-  } catch (e) {
-    setStatus("Kunne ikke gemme i browseren — brug Eksportér for at beholde ændringer");
-  }
+  try { return localStorage.getItem(STORAGE_KEY) !== null; } catch (e) { return false; }
 }
 
 function setStatus(text) {
@@ -199,152 +123,12 @@ function setupTabs() {
 }
 
 // ------------------------------------------------------------
-// PAGES + BURGER MENU
+// PAGES — each feature registers its own page here (see layout.js);
+// the burger menu and routing in menu.js are built from this list.
 // ------------------------------------------------------------
 const PAGES = {
-  wheel: { id: "pageWheel", title: "Grøntsagshavens årshjul" },
-  layout: { id: "pageLayout", title: "Garden Layout" }
+  wheel: { id: "pageWheel", title: "Grøntsagshavens årshjul", menuLabel: "Grøntsagshavens årshjul" }
 };
-
-function showPage(name) {
-  if (!PAGES[name]) name = "wheel";
-  Object.entries(PAGES).forEach(([key, p]) =>
-    document.getElementById(p.id).classList.toggle("active", key === name));
-  document.getElementById("pageTitle").textContent = PAGES[name].title;
-  document.querySelectorAll(".menu-item").forEach(a =>
-    a.classList.toggle("active", a.dataset.page === name));
-  if (name === "layout") renderLayout();
-}
-
-function setMenuOpen(open) {
-  document.getElementById("sideMenu").classList.toggle("open", open);
-  document.getElementById("menuBackdrop").hidden = !open;
-  document.getElementById("menuBtn").setAttribute("aria-expanded", String(open));
-}
-
-function setupMenu() {
-  document.getElementById("menuBtn").addEventListener("click", () =>
-    setMenuOpen(!document.getElementById("sideMenu").classList.contains("open")));
-  document.getElementById("menuBackdrop").addEventListener("click", () => setMenuOpen(false));
-  document.addEventListener("keydown", e => { if (e.key === "Escape") setMenuOpen(false); });
-  document.querySelectorAll(".menu-item").forEach(a =>
-    a.addEventListener("click", () => setMenuOpen(false)));
-  window.addEventListener("hashchange", routeFromHash);
-}
-
-// #wheel (default), #layout, or #plant=<name> (årshjul, "Efter plante")
-function routeFromHash() {
-  const hash = location.hash.slice(1);
-  if (hash.startsWith("plant=")) {
-    const name = decodeURIComponent(hash.slice(6));
-    if (PLANTS.some(p => p.name === name)) {
-      currentPlant = "profile:" + name;
-      renderPlantPicker();
-      renderPlant();
-    }
-    showPage("wheel");
-    showTab("plantView");
-    return;
-  }
-  showPage(hash === "layout" ? "layout" : "wheel");
-}
-
-// ------------------------------------------------------------
-// GARDEN LAYOUT
-// ------------------------------------------------------------
-function renderLayout() {
-  const grid = document.getElementById("gardenGrid");
-  // bed rows alternate with path rows (shown at half the real 1 m for readability)
-  grid.style.gridTemplateRows = BED_ROW_LENGTHS.map(l => `calc(var(--m) * ${l})`).join(" var(--gap) ");
-  let html = "";
-  let n = 0;
-  for (let r = 1; r <= BED_ROW_LENGTHS.length; r++) {
-    for (let c = 1; c <= BED_COLS; c++) {
-      n++;
-      const id = `${c}-${r}`;
-      const crops = layout[id] || [];
-      const cropHtml = !crops.length ? `<span class="bed-empty">Tom</span>`
-        : `<div class="bed-crops">` + crops.map(crop => plantForCrop(crop)
-          ? `<a class="bed-crop" href="#plant=${encodeURIComponent(plantForCrop(crop).name)}" title="Se ${esc(crop)} under Efter plante">${esc(crop)}</a>`
-          : `<span class="bed-crop">${esc(crop)}</span>`).join("") + `</div>`;
-      html += `<div class="bed${crops.length ? " filled" : ""}" data-bed="${id}" style="grid-column:${c * 2 - 1};grid-row:${r * 2 - 1}" role="button" tabindex="0" aria-label="Bed ${n}">
-        <span class="bed-num">Bed ${n} · ${BED_ROW_LENGTHS[r - 1]} m</span>
-        ${cropHtml}
-      </div>`;
-    }
-  }
-  grid.innerHTML = html;
-}
-
-function exportGardenFile() {
-  const content = JSON.stringify({ layout }, null, 2) + "\n";
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(new Blob([content], { type: "application/json" }));
-  link.download = GARDEN_FILE;
-  link.click();
-  URL.revokeObjectURL(link.href);
-  setStatus("garden-data.json downloadet — erstat den gamle fil for at gøre layoutet permanent");
-}
-
-function importGardenFile(file) {
-  if (!file) return;
-  file.text().then(text => {
-    const data = JSON.parse(text);
-    layout = normalizeLayout({ ...emptyLayout(), ...(data.layout || {}) });
-    saveLayout();
-    renderLayout();
-  }).catch(() => setStatus("Kunne ikke læse filen — er det en garden-data.json?"));
-}
-
-function bedNumber(id) {
-  const [c, r] = id.split("-").map(Number);
-  return (r - 1) * BED_COLS + c;
-}
-
-function openBedDialog(id) {
-  editingBed = id;
-  document.getElementById("bedDialogTitle").textContent = `Bed ${bedNumber(id)}`;
-  const names = cropOptions();
-  const current = layout[id] || [];
-  current.forEach(c => { if (!names.includes(c)) names.push(c); });
-  ["bedCrop1", "bedCrop2", "bedCrop3"].forEach((selId, i) => {
-    document.getElementById(selId).innerHTML =
-      `<option value="">— Ingen —</option>` +
-      names.map(n => `<option value="${esc(n)}"${n === current[i] ? " selected" : ""}>${esc(n)}</option>`).join("");
-  });
-  document.getElementById("bedDialog").showModal();
-}
-
-function saveBed() {
-  if (!editingBed) return;
-  const picked = ["bedCrop1", "bedCrop2", "bedCrop3"].map(id => document.getElementById(id).value).filter(Boolean);
-  layout[editingBed] = [...new Set(picked)];
-  document.getElementById("bedDialog").close();
-  editingBed = null;
-  saveLayout();
-  renderLayout();
-}
-
-function setupLayout() {
-  const grid = document.getElementById("gardenGrid");
-  grid.addEventListener("click", e => {
-    if (e.target.closest("a")) return; // crop link navigates instead
-    const bed = e.target.closest(".bed");
-    if (bed) openBedDialog(bed.dataset.bed);
-  });
-  grid.addEventListener("keydown", e => {
-    if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("bed")) {
-      e.preventDefault();
-      openBedDialog(e.target.dataset.bed);
-    }
-  });
-  document.getElementById("exportLayoutBtn").addEventListener("click", exportGardenFile);
-  const importInput = document.getElementById("importLayoutInput");
-  document.getElementById("importLayoutBtn").addEventListener("click", () => importInput.click());
-  importInput.addEventListener("change", () => { importGardenFile(importInput.files[0]); importInput.value = ""; });
-  document.getElementById("bedSave").addEventListener("click", saveBed);
-  document.getElementById("bedCancel").addEventListener("click", () => document.getElementById("bedDialog").close());
-}
 
 // ------------------------------------------------------------
 // MONTH VIEW
@@ -664,10 +448,9 @@ const gardenData = ${JSON.stringify(garden, null, 2)};
 
 function resetToOriginal() {
   if (!confirm("Fjern alle ændringer gemt i browseren og gå tilbage til data.js?")) return;
-  try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(OLD_STORAGE_KEY); localStorage.removeItem(LAYOUT_STORAGE_KEY); } catch (e) {}
+  try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(OLD_STORAGE_KEY); } catch (e) {}
   garden = JSON.parse(JSON.stringify(gardenData));
-  layout = normalizeLayout(baseLayout);
-  renderLayout();
+  document.dispatchEvent(new Event("garden:reset")); // other features reset themselves
   currentPlant = null;
   refreshAll();
   setStatus("Nulstillet til data.js");
@@ -683,10 +466,7 @@ document.getElementById("sourceList").innerHTML = "Kilder: " + Object.values(SOU
 
 currentMonth = Math.min(new Date().getMonth(), garden.length - 1); // Nov+Dec share the last entry
 setupTabs();
-setupMenu();
-setupLayout();
 setupActions();
 refreshAll();
-routeFromHash();
-loadGardenFile();
 setStatus(hasLocalEdits() ? "Viser dine gemte ændringer" : "Ingen ændringer endnu — data kommer fra data.js");
+

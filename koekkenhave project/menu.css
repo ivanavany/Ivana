@@ -1,0 +1,26 @@
+/* ---------- BURGER MENU ---------- */
+.menu-btn{
+  position:fixed;top:14px;left:14px;z-index:30;
+  width:44px;height:44px;border-radius:10px;
+  background:var(--paper-alt);border:1px solid var(--line);
+  color:var(--ink);font-size:1.4rem;cursor:pointer;
+}
+.menu-backdrop{position:fixed;inset:0;background:rgba(35,47,29,.35);z-index:40;}
+.menu-backdrop[hidden]{display:none;}
+.side-menu{
+  position:fixed;top:0;left:0;bottom:0;width:280px;max-width:85vw;z-index:50;
+  background:var(--paper);border-right:1px solid var(--line);
+  padding:70px 16px 16px;transform:translateX(-100%);transition:transform .2s;
+  display:flex;flex-direction:column;gap:6px;
+}
+.side-menu.open{transform:none;box-shadow:4px 0 24px rgba(0,0,0,.15);}
+.menu-item{
+  padding:12px 14px;border-radius:10px;color:var(--ink);text-decoration:none;
+  font-family:'Fraunces', serif;font-size:1.05rem;
+}
+.menu-item:hover{background:var(--paper-alt);}
+.menu-item.active{background:var(--ink);color:var(--paper);}
+
+/* ---------- PAGES ---------- */
+.page{display:none;}
+.page.active{display:block;}
