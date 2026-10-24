@@ -703,6 +703,26 @@ const PLANTS = [
     sources: ["frospiren", "haveglad", "bolius", "norris", "hokus"]
   },
   {
+    name: "Solsikker",
+    method: "Inde eller direkte",
+    sow: "Forspir inde i april eller så direkte når jorden er varm, fra midten af maj.",
+    out: "Efter frostfare, midt/slut maj. Giv dem sol, læ og støtte til de høje sorter.",
+    time: "Blomstrer typisk juli–september.",
+    after: "",
+    match: ["solsik"],
+    sources: ["egen"]
+  },
+  {
+    name: "Vildblomster",
+    method: "Sås direkte",
+    sow: "Så direkte på bar, næringsfattig jord i april–maj, eller om efteråret. Tryk frøene let ned og hold fugtigt til de spirer.",
+    out: "",
+    time: "Blomstrer typisk juni–september og tiltrækker bier og andre nyttedyr.",
+    after: "",
+    match: ["vildblomst"],
+    sources: ["egen"]
+  },
+  {
     name: "Bønner (busk & stang)",
     group: "blad",
     method: "Inde eller direkte",
@@ -738,6 +758,7 @@ const PLANTS = [
   },
   {
     name: "Kartofler",
+    variants: ["Sava", "Solist"],
     group: "kartoffel",
     method: "Lægges/sættes",
     sow: "Forspir i februar–marts i æggebakker, lyst og halvvarmt (ca. 15°), med flest spirer opad. Peter Norris stiller dem til forspiring midt i februar og giver bedet en håndfuld træaske pr. m².",
@@ -892,9 +913,20 @@ const PLANTS = [
     out: "Maj.",
     time: "Høst hele vinteren — sødere efter frost.",
     after: "Står vinteren over.",
-    match: ["grønkål", "palmekål"],
+    match: ["grønkål"],
     exact: ["kål"],
     sources: ["bolius", "haveglad", "fuglebjerg", "klimaOkt", "klimaMar"]
+  },
+  {
+    name: "Palmekål",
+    group: "blad",
+    method: "Sås sommer",
+    sow: "Sås om sommeren (juni) og spises vinteren igennem.",
+    out: "Plantes ud når planterne er store nok, om sommeren.",
+    time: "Høst hele vinteren — sødere efter frost.",
+    after: "Står vinteren over.",
+    match: ["palmekål"],
+    sources: ["fuglebjerg"]
   },
   {
     name: "Rosenkål",
