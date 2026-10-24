@@ -8,19 +8,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="layout.css">
+<link rel="stylesheet" href="menu.css">
 </head>
 <body>
 
   <header class="hero">
-    <h1>Grøntsagshavens årshjul</h1>
+    <h1 id="pageTitle">Grøntsagshavens årshjul</h1>
   </header>
 
   <main class="wrap">
-
-    <nav class="tabs">
-      <button class="tab-btn active" data-tab="monthView">Efter måned</button>
-      <button class="tab-btn" data-tab="plantView">Efter plante</button>
-    </nav>
 
     <!-- Save / export bar -->
     <div class="savebar">
@@ -30,6 +27,12 @@
         <button id="resetBtn" class="ghost">Nulstil</button>
       </span>
     </div>
+
+    <div id="pageWheel" class="page active">
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="monthView">Efter måned</button>
+      <button class="tab-btn" data-tab="plantView">Efter plante</button>
+    </nav>
 
     <section id="monthView" class="panel active">
       <div class="picker" id="monthPicker"></div>
@@ -41,6 +44,7 @@
       <div class="picker" id="plantPicker"></div>
       <div class="detail" id="plantDetail"></div>
     </section>
+    </div>
 
   </main>
 
@@ -64,5 +68,7 @@
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script src="layout.js"></script>
+  <script src="menu.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 // ============================================================
-// APP LOGIC
+// APP LOGIC — Grøntsagshavens årshjul (month/plant views)
 // Reads SOURCES, CLIMATE and gardenData (from data.js),
 // draws the screen, and handles clicks + editing.
 // ============================================================
@@ -111,17 +111,24 @@ function editButtons(m, cat, i) {
 // ------------------------------------------------------------
 // TABS
 // ------------------------------------------------------------
+function showTab(tabId) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tabId));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === tabId));
+}
+
 function setupTabs() {
-  const buttons = document.querySelectorAll(".tab-btn");
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      buttons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-      document.getElementById(btn.dataset.tab).classList.add("active");
-    });
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => showTab(btn.dataset.tab));
   });
 }
+
+// ------------------------------------------------------------
+// PAGES — each feature registers its own page here (see layout.js);
+// the burger menu and routing in menu.js are built from this list.
+// ------------------------------------------------------------
+const PAGES = {
+  wheel: { id: "pageWheel", title: "Grøntsagshavens årshjul", menuLabel: "Grøntsagshavens årshjul" }
+};
 
 // ------------------------------------------------------------
 // MONTH VIEW
@@ -443,6 +450,7 @@ function resetToOriginal() {
   if (!confirm("Fjern alle ændringer gemt i browseren og gå tilbage til data.js?")) return;
   try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(OLD_STORAGE_KEY); } catch (e) {}
   garden = JSON.parse(JSON.stringify(gardenData));
+  document.dispatchEvent(new Event("garden:reset")); // other features reset themselves
   currentPlant = null;
   refreshAll();
   setStatus("Nulstillet til data.js");
@@ -461,3 +469,4 @@ setupTabs();
 setupActions();
 refreshAll();
 setStatus(hasLocalEdits() ? "Viser dine gemte ændringer" : "Ingen ændringer endnu — data kommer fra data.js");
+
